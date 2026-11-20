@@ -1,0 +1,5 @@
+"use client";
+import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+const colors=["#594de6","#818cf8","#a5b4fc","#c7d2fe","#2a9d75","#f0a44b","#f27d6d"];
+export function CategoryChart({data}:{data:{name:string;value:number}[]}){return <ResponsiveContainer width="100%" height={240}><PieChart><Pie data={data} dataKey="value" nameKey="name" innerRadius={60} outerRadius={88} paddingAngle={3}>{data.map((_,i)=><Cell key={i} fill={colors[i%colors.length]}/>)}</Pie><Tooltip formatter={(v)=>[`₹${Number(v).toLocaleString("en-IN")}`]}/><Legend iconType="circle"/></PieChart></ResponsiveContainer>}
+export function CostChart({data}:{data:{name:string;monthly:number}[]}){return <ResponsiveContainer width="100%" height={270}><BarChart data={data} margin={{left:-16,right:8,top:8}}><XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize:11,fill:"#64748b"}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:10,fill:"#94a3b8"}}/><Tooltip formatter={(v)=>[`₹${Number(v).toLocaleString("en-IN")}`,"/ month"]}/><Bar dataKey="monthly" fill="#594de6" radius={[5,5,0,0]}/></BarChart></ResponsiveContainer>}
