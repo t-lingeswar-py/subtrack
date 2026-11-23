@@ -1,7 +1,151 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { currency } from "@/lib/calculations";
-import { addSubscription, changeStatus, deleteSubscription } from "@/app/dashboard/actions";
-import { Search, Plus } from "lucide-react";
-const categories=["Entertainment","Music","Software","Cloud Storage","Education","Shopping","Gaming","Productivity","Fitness","Other"];
-export default async function Subscriptions({searchParams}:{searchParams:Promise<{q?:string;category?:string;status?:string;error?:string;success?:string}>}){const params=await searchParams,sb=await createClient(),{data:{user}}=await sb.auth.getUser();if(!user)return null;const {data:itemRows}=await sb.from("subscriptions").select("*").eq("user_id",user.id).order("created_at",{ascending:false});const items=itemRows??[];const rows=items.filter(s=>(!params.q||s.service_name.toLowerCase().includes(params.q.toLowerCase()))&&(!params.category||s.category===params.category)&&(!params.status||s.status===params.status));const today=new Date().toISOString().slice(0,10);return <main className="dashboard-content"><div className="page-heading"><div><div className="eyebrow">YOUR RECURRING PAYMENTS</div><h1>Subscriptions</h1><p>Keep every plan and renewal date in one place.</p></div><a className="button button-primary" href="#add">+ Add subscription</a></div>{params.error&&<div className="form-error">{params.error}</div>}{params.success&&<div className="form-note">{params.success}</div>}<section className="panel subscription-panel"><div className="toolbar"><form className="filter-form"><span className="search-wrap"><Search size={16}/><input name="q" defaultValue={params.q} placeholder="Search subscriptions"/></span><select name="category" defaultValue={params.category||""}><option value="">All categories</option>{categories.map(c=><option key={c}>{c}</option>)}</select><select name="status" defaultValue={params.status||""}><option value="">All statuses</option><option value="active">Active</option><option value="paused">Paused</option><option value="cancelled">Cancelled</option></select><button className="button button-quiet button-small">Filter</button></form><span className="result-count">{rows.length} subscription{rows.length===1?"":"s"}</span></div>{rows.length?<div className="table-scroll"><table><thead><tr><th>SERVICE</th><th>CATEGORY</th><th>AMOUNT</th><th>CYCLE</th><th>NEXT PAYMENT</th><th>STATUS</th><th>ACTIONS</th></tr></thead><tbody>{rows.map(s=><tr key={s.id}><td><Link className="table-service" href={`/dashboard/subscriptions/${s.id}`}><span className="service-icon service-generic">{s.service_name[0].toUpperCase()}</span>{s.service_name}</Link></td><td>{s.category}</td><td className="table-amount">{currency(Number(s.amount),s.currency)}</td><td>{s.billing_cycle.replace("_"," ")}</td><td>{new Date(s.next_payment_date+"T12:00:00").toLocaleDateString("en-IN",{month:"short",day:"numeric",year:"numeric"})}</td><td><span className={`status status-${s.status}`}>{s.status}</span></td><td><div className="row-actions"><form action={changeStatus}><input type="hidden" name="id" value={s.id}/><input type="hidden" name="status" value={s.status==="active"?"paused":"active"}/><button className="text-action">{s.status==="active"?"Pause":"Resume"}</button></form><form action={deleteSubscription}><input type="hidden" name="id" value={s.id}/><button className="text-action text-danger" aria-label={`Delete ${s.service_name}`}>Delete</button></form></div></td></tr>)}</tbody></table></div>:<div className="empty-state"><div className="empty-icon"><Search/></div><h3>{items.length?"No subscriptions match those filters.":"You haven’t added any subscriptions yet."}</h3><p>{items.length?"Try a different search or filter.":"Add your first recurring payment to get started."}</p>{!items.length&&<a className="button button-primary button-small" href="#add">Add your first subscription</a>}</div>}</section><section className="panel add-panel" id="add"><div className="panel-heading"><div><h2>Add a subscription</h2><p>Enter the service and renewal details.</p></div><Plus size={19}/></div><form action={addSubscription} className="subscription-form"><label>Service name<input name="service_name" placeholder="e.g. Netflix" required maxLength={100}/></label><label>Category<select name="category" defaultValue="Entertainment">{categories.map(c=><option key={c}>{c}</option>)}</select></label><label>Amount<input name="amount" type="number" min="0.01" step="0.01" placeholder="649" required/></label><label>Currency<select name="currency" defaultValue="INR">{["INR","USD","EUR","GBP","CAD","AUD","SGD"].map(c=><option key={c}>{c}</option>)}</select></label><label>Billing cycle<select name="billing_cycle" defaultValue="monthly"><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="half_yearly">Half-yearly</option><option value="yearly">Yearly</option></select></label><label>Start date<input name="start_date" type="date" defaultValue={today} required/></label><label>Next payment date<input name="next_payment_date" type="date" defaultValue={today} required/></label><label>Payment method<select name="payment_method">{["Credit Card","Debit Card","UPI","Net Banking","Wallet","Other"].map(c=><option key={c}>{c}</option>)}</select></label><label className="form-wide">Website URL <span className="optional">optional</span><input name="website_url" type="url" placeholder="https://example.com"/></label><label className="form-wide">Notes <span className="optional">optional</span><textarea name="notes" rows={2} placeholder="A note to remember"/></label><label className="checkbox-label form-wide"><input name="auto_renewal" type="checkbox" defaultChecked/> This subscription auto-renews</label><div className="form-wide"><button className="button button-primary">Save subscription <Plus size={15}/></button></div></form></section></main>}
+import { Plus, Search, SlidersHorizontal } from "lucide-react";
+import { ConfirmSubmitButton } from "@/components/ui/confirm-submit-button";
+import { changeStatus, deleteSubscription } from "@/app/dashboard/actions";
+import { requireAuthContext } from "@/lib/dal/auth";
+import { currency, dateInTimeZone } from "@/lib/calculations";
+import { subscriptionCategories } from "@/lib/validations/subscriptions";
+import { SubscriptionForm } from "@/components/subscriptions/subscription-form";
+
+type SearchParams = {
+  q?: string;
+  category?: string;
+  status?: string;
+  sort?: string;
+  error?: string;
+  success?: string;
+};
+
+const subscriptionErrors: Record<string, string> = {
+  invalid_subscription: "Check the service name, price, cycle, and dates.",
+  save_failed: "We couldn’t save this subscription. Please try again.",
+  delete_failed: "We couldn’t delete this plan. Remove any linked payment records first, then try again.",
+};
+
+function readableDate(date: string) {
+  return new Date(`${date}T12:00:00`).toLocaleDateString("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+export default async function Subscriptions({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const params = await searchParams;
+  const { supabase, user } = await requireAuthContext();
+  const [{ data: subscriptionRows }, { data: profile }] = await Promise.all([
+    supabase.from("subscriptions").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
+    supabase.from("profiles").select("timezone").eq("id", user.id).maybeSingle(),
+  ]);
+
+  const subscriptions = subscriptionRows ?? [];
+  const query = params.q?.trim().toLocaleLowerCase() ?? "";
+  const matching = subscriptions.filter((subscription) =>
+    (!query || subscription.service_name.toLocaleLowerCase().includes(query)) &&
+    (!params.category || subscription.category === params.category) &&
+    (!params.status || subscription.status === params.status),
+  );
+  const rows = [...matching].sort((a, b) => {
+    switch (params.sort) {
+      case "amount_desc": return Number(b.amount) - Number(a.amount);
+      case "amount_asc": return Number(a.amount) - Number(b.amount);
+      case "name": return a.service_name.localeCompare(b.service_name);
+      default: return a.next_payment_date.localeCompare(b.next_payment_date);
+    }
+  });
+  const today = dateInTimeZone(new Date(), profile?.timezone || "Asia/Kolkata");
+
+  return (
+    <main className="dashboard-content">
+      <div className="page-heading">
+        <div>
+          <div className="eyebrow">YOUR RECURRING PAYMENTS</div>
+          <h1>Subscriptions</h1>
+          <p>Keep plans, costs, and expected renewal dates in one place.</p>
+        </div>
+        <Link className="button button-primary" href="#add"><Plus size={16}/> Add subscription</Link>
+      </div>
+
+      {params.error && <div className="form-error" role="alert">{subscriptionErrors[params.error] || "We couldn’t complete that subscription action."}</div>}
+      {params.success === "created" && <div className="form-note" role="status">Subscription saved.</div>}
+
+      <section className="panel subscription-panel" aria-label="Subscription list">
+        <div className="toolbar">
+          <form className="filter-form" action="/dashboard/subscriptions">
+            <label className="search-wrap">
+              <Search size={16} aria-hidden="true"/>
+              <span className="sr-only">Search subscriptions</span>
+              <input name="q" defaultValue={params.q} placeholder="Search plans"/>
+            </label>
+            <label className="sr-only" htmlFor="subscription-category">Filter by category</label>
+            <select id="subscription-category" name="category" defaultValue={params.category || ""}>
+              <option value="">All categories</option>
+              {subscriptionCategories.map((category) => <option key={category} value={category}>{category}</option>)}
+            </select>
+            <label className="sr-only" htmlFor="subscription-status">Filter by status</label>
+            <select id="subscription-status" name="status" defaultValue={params.status || ""}>
+              <option value="">All statuses</option>
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <label className="sr-only" htmlFor="subscription-sort">Sort subscriptions</label>
+            <select id="subscription-sort" name="sort" defaultValue={params.sort || "next"}>
+              <option value="next">Soonest renewal</option>
+              <option value="amount_desc">Highest cost</option>
+              <option value="amount_asc">Lowest cost</option>
+              <option value="name">Service name</option>
+            </select>
+            <button className="button button-quiet button-small"><SlidersHorizontal size={14}/> Apply</button>
+          </form>
+          <span className="result-count">{rows.length} of {subscriptions.length} plans</span>
+        </div>
+
+        {rows.length ? (
+          <div className="table-scroll">
+            <table>
+              <thead><tr><th scope="col">SERVICE</th><th scope="col">CATEGORY</th><th scope="col">PRICE</th><th scope="col">BILLING</th><th scope="col">NEXT EXPECTED</th><th scope="col">STATUS</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
+              <tbody>{rows.map((subscription) => (
+                <tr key={subscription.id}>
+                  <td><Link className="table-service" href={`/dashboard/subscriptions/${subscription.id}`}><span className="service-icon service-generic" aria-hidden="true">{subscription.service_name.slice(0, 1).toUpperCase()}</span>{subscription.service_name}</Link></td>
+                  <td>{subscription.category}</td>
+                  <td className="table-amount">{currency(Number(subscription.amount), subscription.currency)}<small className="billing-unit"> / {subscription.billing_cycle.replace("_", " ")}</small></td>
+                  <td>{subscription.billing_cycle.replace("_", " ")}</td>
+                  <td>{readableDate(subscription.next_payment_date)}</td>
+                  <td><span className={`status status-${subscription.status}`}>{subscription.status}</span></td>
+                  <td><div className="row-actions">
+                    <form action={changeStatus}>
+                      <input type="hidden" name="id" value={subscription.id}/>
+                      <input type="hidden" name="status" value={subscription.status === "active" ? "paused" : "active"}/>
+                      <button className="text-action">{subscription.status === "active" ? "Pause" : subscription.status === "paused" ? "Resume" : "Reactivate"}</button>
+                    </form>
+                    <form action={deleteSubscription}>
+                      <input type="hidden" name="id" value={subscription.id}/>
+                      <ConfirmSubmitButton className="text-action text-danger" ariaLabel={`Delete ${subscription.service_name}`} message={`Delete ${subscription.service_name}? Recorded payment history is retained and may prevent deletion.`}>Delete</ConfirmSubmitButton>
+                    </form>
+                  </div></td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="empty-state">
+            <div className="empty-icon"><Search size={18}/></div>
+            <h2>{subscriptions.length ? "No plans match these filters." : "Start with your first recurring payment."}</h2>
+            <p>{subscriptions.length ? "Try another search or reset the filters." : "Add the services you pay for to see upcoming dates and your monthly commitment."}</p>
+            {subscriptions.length ? <Link href="/dashboard/subscriptions" className="button button-quiet button-small">Reset filters</Link> : <Link href="#add" className="button button-primary button-small">Add your first subscription</Link>}
+          </div>
+        )}
+      </section>
+
+      <section className="panel add-panel" id="add" aria-labelledby="add-subscription-title">
+        <div className="panel-heading">
+          <div><h2 id="add-subscription-title">Add a subscription</h2><p>Forecast dates are estimates. Payments are recorded separately.</p></div>
+          <Plus size={19} aria-hidden="true"/>
+        </div>
+        <SubscriptionForm today={today}/>
+      </section>
+    </main>
+  );
+}
