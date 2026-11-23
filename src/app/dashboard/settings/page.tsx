@@ -87,7 +87,7 @@ export default async function Settings({
             <form action={deleteAccount} className="delete-account-form">
               <label>Current password<input type="password" name="current_password" autoComplete="current-password" minLength={8} required/></label>
               <label>Type <b>DELETE</b> to confirm<input name="confirmation" autoComplete="off" pattern="DELETE" required/></label>
-              <ConfirmSubmitButton className="button button-danger" message="Permanently delete your SubTrack account and all saved data? This action cannot be undone.">Delete my account</ConfirmSubmitButton>
+              <ConfirmSubmitButton className="button button-danger" confirmLabel="Delete my account" message="Permanently delete your SubTrack account and all saved data? This action cannot be undone.">Delete my account</ConfirmSubmitButton>
             </form>
           </div>
         </article>

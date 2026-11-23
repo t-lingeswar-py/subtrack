@@ -60,12 +60,12 @@ export default async function History({ searchParams }: { searchParams: Promise<
               <thead><tr><th scope="col">SUBSCRIPTION</th><th scope="col">PAYMENT DATE</th><th scope="col">METHOD</th><th scope="col">STATUS</th><th scope="col">AMOUNT</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
               <tbody>{payments.map((payment) => (
                 <tr key={payment.id}>
-                  <td>{payment.subscriptions?.service_name || "Subscription"}</td>
-                  <td>{new Date(`${payment.payment_date}T12:00:00`).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}</td>
-                  <td>{payment.payment_method}</td>
-                  <td><span className={`status status-${payment.status}`}>{payment.status}</span></td>
-                  <td className="table-amount">{currency(Number(payment.amount), payment.currency)}</td>
-                  <td><div className="row-actions">
+                  <td data-label="Subscription">{payment.subscriptions?.service_name || "Subscription"}</td>
+                  <td data-label="Payment date">{new Date(`${payment.payment_date}T12:00:00`).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}</td>
+                  <td data-label="Method">{payment.payment_method}</td>
+                  <td data-label="Status"><span className={`status status-${payment.status}`}>{payment.status}</span></td>
+                  <td data-label="Amount" className="table-amount">{currency(Number(payment.amount), payment.currency)}</td>
+                  <td data-label="Actions"><div className="row-actions">
                     <details className="payment-edit">
                       <summary className="text-action">Edit</summary>
                       <form action={updatePayment} className="history-edit-form">
@@ -81,7 +81,7 @@ export default async function History({ searchParams }: { searchParams: Promise<
                     </details>
                     <form action={deletePayment}>
                       <input type="hidden" name="id" value={payment.id}/>
-                      <ConfirmSubmitButton className="text-action text-danger" ariaLabel={`Delete payment for ${payment.subscriptions?.service_name || "subscription"}`} message="Delete this payment record? This cannot be undone.">Delete</ConfirmSubmitButton>
+                      <ConfirmSubmitButton className="text-action text-danger" ariaLabel={`Delete payment for ${payment.subscriptions?.service_name || "subscription"}`} confirmLabel="Delete payment" message="Delete this payment record? This cannot be undone.">Delete</ConfirmSubmitButton>
                     </form>
                   </div></td>
                 </tr>

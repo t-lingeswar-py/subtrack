@@ -125,12 +125,12 @@ export default async function SubscriptionDetail({
               {subscription.status !== "cancelled" && <form action={changeStatus}>
                 <input type="hidden" name="id" value={subscription.id}/>
                 <input type="hidden" name="status" value="cancelled"/>
-                <ConfirmSubmitButton className="button button-quiet button-small text-danger" message="Mark this plan as cancelled in SubTrack? This does not cancel billing with the merchant.">Mark cancelled here</ConfirmSubmitButton>
+                <ConfirmSubmitButton className="button button-quiet button-small text-danger" confirmLabel="Mark cancelled" message="Mark this plan as cancelled in SubTrack? This does not cancel billing with the merchant.">Mark cancelled here</ConfirmSubmitButton>
               </form>}
               <Link className="button button-quiet button-small" href="/dashboard/history">Record a payment <ArrowUpRight size={13}/></Link>
               <form action={deleteSubscription}>
                 <input type="hidden" name="id" value={subscription.id}/>
-                <ConfirmSubmitButton className="text-action text-danger" message={`Delete ${subscription.service_name}? Recorded payment history may prevent deletion.`}>Delete plan data</ConfirmSubmitButton>
+                <ConfirmSubmitButton className="text-action text-danger" confirmLabel="Delete plan data" message={`Delete ${subscription.service_name}? Recorded payment history may prevent deletion.`}>Delete plan data</ConfirmSubmitButton>
               </form>
             </div>
           </article>

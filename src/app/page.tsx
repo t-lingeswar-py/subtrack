@@ -1,26 +1,208 @@
 import Link from "next/link";
-import { ArrowRight, Bell, CalendarDays, ChartNoAxesCombined, Check, CreditCard, ShieldCheck, Sparkles, WalletCards } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowRight,
+  Bell,
+  CalendarDays,
+  ChartNoAxesCombined,
+  Check,
+  CreditCard,
+  ShieldCheck,
+  Sparkles,
+  WalletCards,
+} from "lucide-react";
 
 const features = [
-  [WalletCards, "One calm place", "Keep every subscription, payment method and renewal date together."],
-  [ChartNoAxesCombined, "Know what you spend", "See monthly costs, annual projections and category breakdowns at a glance."],
-  [Bell, "A heads-up, right on time", "Get in-app reminders before renewals so nothing catches you by surprise."],
-  [CalendarDays, "Renewals on your calendar", "Plan the month ahead with a clear view of what is coming due."],
-  [Sparkles, "Find room to save", "Review the subscriptions you marked rarely used and see their potential cost."],
-  [CreditCard, "A clear payment history", "Record payments manually and keep a tidy history without linking your bank."],
+  [WalletCards, "Everything in one view", "Keep each service, billing cycle, and expected renewal together."],
+  [ChartNoAxesCombined, "A clearer monthly picture", "Understand recurring commitments without mixing currencies."],
+  [Bell, "Reminders on your terms", "Choose when SubTrack should surface an in-app renewal reminder."],
+  [CalendarDays, "Space to plan ahead", "See expected renewal dates before they arrive."],
+  [Sparkles, "A useful usage check-in", "Review plans you have marked as rarely used or not used."],
+  [CreditCard, "Payments, recorded by you", "Keep a manual record after you confirm a payment yourself."],
 ] as const;
 
+const principles = [
+  "No bank connection",
+  "Your account, your records",
+  "Renewal dates are estimates",
+  "Payments are entered manually",
+];
+
+const steps = [
+  ["01", "Make it yours", "Create a private workspace for your recurring plans."],
+  ["02", "Add what you use", "Enter each service, price, cycle, and expected date."],
+  ["03", "See the full picture", "Bring upcoming renewals and monthly equivalents together."],
+  ["04", "Choose what stays", "Use your own check-ins to decide what is still worth it."],
+];
+
 export default function Home() {
-  return <main className="landing" id="main-content"><a href="#hero-title" className="skip-link">Skip to content</a>
-    <nav className="site-nav shell"><Link className="brand" href="/"><span className="brand-mark">s</span>subtrack</Link><div className="nav-links"><a href="#features">Features</a><a href="#how">How it works</a><a href="#pricing">Pricing</a></div><div className="nav-actions"><Link className="nav-login" href="/login">Log in</Link><Link className="button button-primary button-small" href="/register">Get started <ArrowRight size={15}/></Link></div></nav>
-    <section className="hero shell"><div className="hero-copy"><div className="eyebrow"><span className="eyebrow-dot"/> YOUR MONEY, A LITTLE MORE ORGANIZED</div><h1 id="hero-title" tabIndex={-1}>Stop losing money on <span>forgotten</span> subscriptions.</h1><p>Manage every recurring payment in one place. Know what is coming, what it costs, and where you might save.</p><div className="hero-actions"><Link className="button button-primary" href="/register">Get started free <ArrowRight size={16}/></Link><a className="button button-quiet" href="#features">Explore features</a></div><div className="hero-foot"><ShieldCheck size={16}/> Private by design <span/> No bank connection required</div></div>
-      <div className="hero-visual" role="img" aria-label="Illustration of a SubTrack dashboard with sample spending and upcoming subscriptions"><div className="visual-glow"/><div className="depth-scene" aria-hidden="true"><span className="depth-ring depth-ring-a"/><span className="depth-ring depth-ring-b"/><span className="depth-orb depth-orb-a"/><span className="depth-orb depth-orb-b"/><span className="depth-grid"/></div><div className="preview-card"><div className="preview-demo-tag">SAMPLE DASHBOARD</div><div className="preview-top"><div><div className="preview-label">TOTAL MONTHLY SPEND</div><div className="preview-total">₹2,897<span>.00</span></div></div><div className="preview-badge">↗ 8.2%</div></div><div className="chart-bars"><div style={{height:"37%"}}/><div style={{height:"48%"}}/><div style={{height:"42%"}}/><div style={{height:"64%"}}/><div style={{height:"56%"}}/><div style={{height:"76%"}}/><div className="bar-current" style={{height:"88%"}}/></div><div className="chart-months"><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span></div><div className="preview-divider"/><div className="preview-section-title">UP NEXT</div><div className="preview-payment"><div className="service-icon netflix">N</div><div className="payment-name"><b>Netflix</b><small>Entertainment · Nov 24</small></div><strong>₹649</strong></div><div className="preview-payment"><div className="service-icon spotify">◖</div><div className="payment-name"><b>Spotify</b><small>Music · Nov 27</small></div><strong>₹119</strong></div><div className="preview-payment"><div className="service-icon google">G</div><div className="payment-name"><b>Google One</b><small>Cloud storage · Dec 02</small></div><strong>₹130</strong></div></div><div className="floating-note"><span className="note-icon"><Bell size={15}/></span><div><b>Renewal coming up</b><small>A payment is due soon</small></div><span className="note-dot"/></div><div className="floating-savings"><Sparkles size={15}/><span>Potential savings</span><b>Review unused plans</b></div></div>
-    </section>
-    <section className="trust-row shell"><span>MADE FOR THE LITTLE RECURRING THINGS</span><div><i>netflix</i><i>Spotify</i><i>prime video</i><i>Google One</i><i>Adobe</i><i>ChatGPT</i></div></section>
-    <section className="section shell" id="features"><div className="section-heading"><div className="eyebrow">LESS GUESSING, MORE CLARITY</div><h2>Your subscriptions, <span>in perspective.</span></h2><p>The details you need to stay on top of recurring spending, without another complicated finance app.</p></div><div className="feature-grid">{features.map(([Icon,title,body])=><article className="feature-card" key={title}><div className="feature-icon"><Icon size={19}/></div><h3>{title}</h3><p>{body}</p></article>)}</div></section>
-    <section className="how-section" id="how"><div className="shell how-inner"><div className="eyebrow">A FRESH START IN MINUTES</div><h2>Four small steps to <span>more control.</span></h2><div className="steps">{[["01","Create your account","Your subscription list is private to you."],["02","Add what you pay for","Enter a service, cost and billing cycle."],["03","See the whole picture","Your dashboard brings dates and costs together."],["04","Make your next move","Review usage and decide what stays."]] .map(([n,t,d])=><div className="step" key={n}><span>{n}</span><h3>{t}</h3><p>{d}</p></div>)}</div></div></section>
-    <section className="section pricing-section shell" id="pricing"><div className="section-heading"><div className="eyebrow">SIMPLE, FOR NOW</div><h2>Start free. <span>Grow when you need.</span></h2><p>Everything you need to build a clearer picture of your subscriptions.</p></div><div className="pricing-grid"><article className="price-card"><div className="price-label">FREE</div><h3>For getting organized</h3><div className="price">₹0 <span>/ forever</span></div><ul>{["Up to 5 subscriptions","Essential spending dashboard","Upcoming payment tracking","Basic analytics"].map(t=><li key={t}><Check size={15}/>{t}</li>)}</ul><Link className="button button-quiet full-button" href="/register">Get started free <ArrowRight size={15}/></Link></article><article className="price-card price-plus"><div className="price-label">PLUS <span>COMING LATER</span></div><h3>For the whole picture</h3><div className="price">More clarity<span> / less clutter</span></div><ul>{["Unlimited subscriptions","Advanced analytics","Custom reminders","Spending insights"].map(t=><li key={t}><Check size={15}/>{t}</li>)}</ul><Link className="button button-light full-button" href="#features">Explore features <ArrowRight size={15}/></Link></article></div><p className="pricing-note">Pricing is a preview. SubTrack does not process payments.</p></section>
-    <section className="closing"><div className="shell closing-inner"><div className="eyebrow">MAKE YOUR NEXT RENEWAL A CHOICE</div><h2>A little more clarity<br/>starts here.</h2><Link className="button button-primary" href="/register">Get started free <ArrowRight size={16}/></Link></div></section>
-    <footer className="site-footer shell"><Link className="brand" href="/"><span className="brand-mark">s</span>subtrack</Link><span>All your subscriptions. One smart dashboard.</span><div><a href="#features">Features</a><a href="mailto:hello@subtrack.app">Contact</a><Link href="/login">Log in</Link></div><small>© 2026 SubTrack</small></footer>
-  </main>;
+  return (
+    <main className="landing" id="main-content">
+      <a href="#hero-title" className="skip-link">Skip to content</a>
+
+      <header className="site-header">
+        <nav className="site-nav shell" aria-label="Main navigation">
+          <Link className="brand" href="/">
+            <span className="brand-mark" aria-hidden="true">s</span>subtrack
+          </Link>
+          <div className="nav-links">
+            <a href="#features">Product</a>
+            <a href="#how">How it works</a>
+            <a href="#pricing">Pricing</a>
+          </div>
+          <div className="nav-actions">
+            <Link className="nav-login" href="/login">Log in</Link>
+            <Link className="button button-primary button-small" href="/register">
+              Get started <ArrowRight size={15} aria-hidden="true"/>
+            </Link>
+          </div>
+        </nav>
+      </header>
+
+      <section className="hero shell" aria-labelledby="hero-title">
+        <div className="hero-copy">
+          <div className="eyebrow"><span className="eyebrow-dot"/> RECURRING SPEND, BACK IN VIEW</div>
+          <h1 id="hero-title" tabIndex={-1}>A little more <span>control</span> over what comes around.</h1>
+          <p>Every recurring plan, price, and expected renewal in one considered place. No bank connection. No guesswork about what was paid.</p>
+          <div className="hero-actions">
+            <Link className="button button-primary" href="/register">Build your overview <ArrowRight size={16} aria-hidden="true"/></Link>
+            <a className="button button-quiet" href="#features">Take a closer look</a>
+          </div>
+          <div className="hero-foot"><ShieldCheck size={16} aria-hidden="true"/> Private workspace <span/> Manual records, by design</div>
+        </div>
+
+        <div className="hero-visual" role="img" aria-label="Illustrative SubTrack dashboard with clearly labeled sample data">
+          <div className="visual-glow"/>
+          <div className="depth-scene" aria-hidden="true">
+            <span className="depth-ring depth-ring-a"/>
+            <span className="depth-ring depth-ring-b"/>
+            <span className="depth-orb depth-orb-a"/>
+            <span className="depth-orb depth-orb-b"/>
+            <span className="depth-grid"/>
+          </div>
+          <div className="preview-card">
+            <div className="preview-demo-tag"><span/> PRODUCT PREVIEW · SAMPLE DATA</div>
+            <div className="preview-top">
+              <div>
+                <div className="preview-label">MONTHLY PLAN COMMITMENT</div>
+                <div className="preview-total">₹2,897<span>.00</span></div>
+              </div>
+              <span className="preview-badge"><ArrowDownRight size={13} aria-hidden="true"/> Example</span>
+            </div>
+            <div className="preview-chart" aria-hidden="true">
+              <div className="chart-guides"><span/><span/><span/></div>
+              <div className="chart-bars">
+                {[38, 48, 42, 63, 56, 76, 88].map((height, index) => (
+                  <i className={index === 6 ? "bar-current" : ""} key={index} style={{ height: `${height}%` }}/>
+                ))}
+              </div>
+            </div>
+            <div className="chart-months" aria-hidden="true">
+              {["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"].map((month) => <span key={month}>{month}</span>)}
+            </div>
+            <div className="preview-divider"/>
+            <div className="preview-section-title">EXPECTED RENEWALS <span>THIS WEEK</span></div>
+            {[
+              ["netflix", "N", "Netflix", "Entertainment · Nov 24", "₹649"],
+              ["spotify", "◖", "Spotify", "Music · Nov 27", "₹119"],
+              ["google", "G", "Google One", "Cloud storage · Dec 02", "₹130"],
+            ].map(([tone, mark, name, category, price]) => (
+              <div className="preview-payment" key={name}>
+                <span className={`service-icon ${tone}`} aria-hidden="true">{mark}</span>
+                <span className="payment-name"><b>{name}</b><small>{category}</small></span>
+                <strong>{price}</strong>
+              </div>
+            ))}
+            <div className="preview-caption">A product illustration — not live account data.</div>
+          </div>
+          <div className="floating-note" aria-hidden="true">
+            <span className="note-icon"><Bell size={15}/></span>
+            <span><b>Renewal reminder</b><small>Review the expected date</small></span>
+            <i className="note-dot"/>
+          </div>
+          <div className="floating-savings" aria-hidden="true">
+            <Sparkles size={15}/><span>Usage check-in</span><b>Your estimate</b>
+          </div>
+        </div>
+      </section>
+
+      <section className="trust-row shell" aria-label="How SubTrack works">
+        <span>BUILT AROUND CLARITY, NOT SURVEILLANCE</span>
+        <div>{principles.map((principle) => <span key={principle}><Check size={14} aria-hidden="true"/>{principle}</span>)}</div>
+      </section>
+
+      <section className="section shell" id="features" aria-labelledby="features-title">
+        <div className="section-heading">
+          <div className="eyebrow">THE DETAILS, WITHOUT THE NOISE</div>
+          <h2 id="features-title">A calmer way to see <span>the recurring stuff.</span></h2>
+          <p>SubTrack brings your own subscription details into focus, without pretending to know what happens at your bank.</p>
+        </div>
+        <div className="feature-grid">
+          {features.map(([Icon, title, body], index) => (
+            <article className="feature-card" key={title}>
+              <div className="feature-icon"><Icon size={19} aria-hidden="true"/></div>
+              <span className="feature-index">0{index + 1}</span>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="how-section" id="how" aria-labelledby="how-title">
+        <div className="shell how-inner">
+          <div className="eyebrow">SMALL STEPS, A CLEARER MONTH</div>
+          <h2 id="how-title">Your recurring spend,<br/><span>on your terms.</span></h2>
+          <div className="steps">
+            {steps.map(([number, title, description]) => (
+              <article className="step" key={number}>
+                <span>{number}</span><h3>{title}</h3><p>{description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section pricing-section shell" id="pricing" aria-labelledby="pricing-title">
+        <div className="section-heading">
+          <div className="eyebrow">STRAIGHTFORWARD, FOR NOW</div>
+          <h2 id="pricing-title">No tiers to decode. <span>Just the product.</span></h2>
+          <p>SubTrack is currently free to use. It does not process payments or sell paid plans.</p>
+        </div>
+        <article className="price-card price-preview">
+          <div className="price-label">CURRENT ACCESS <span>PRODUCT PREVIEW</span></div>
+          <div className="price-card-body">
+            <div>
+              <h3>Everything available today</h3>
+              <p className="price-description">A private place to keep recurring plans in order.</p>
+            </div>
+            <ul>
+              {["Track your subscription details", "See expected renewal dates", "Keep manual payment records", "Review user-reported usage"].map((item) => (
+                <li key={item}><Check size={15} aria-hidden="true"/>{item}</li>
+              ))}
+            </ul>
+            <Link className="button button-primary full-button" href="/register">Create your workspace <ArrowRight size={15} aria-hidden="true"/></Link>
+          </div>
+        </article>
+        <p className="pricing-note">No card required. SubTrack does not charge merchants or confirm payments.</p>
+      </section>
+
+      <section className="closing">
+        <div className="shell closing-inner">
+          <div className="eyebrow">MAKE THE NEXT RENEWAL A CHOICE</div>
+          <h2>Bring the recurring<br/>back into focus.</h2>
+          <Link className="button button-light" href="/register">Get started <ArrowRight size={16} aria-hidden="true"/></Link>
+        </div>
+      </section>
+
+      <footer className="site-footer shell">
+        <Link className="brand" href="/"><span className="brand-mark" aria-hidden="true">s</span>subtrack</Link>
+        <span>All your subscriptions. One considered view.</span>
+        <nav aria-label="Footer navigation">
+          <a href="#features">Product</a><a href="mailto:hello@subtrack.app">Contact</a><Link href="/login">Log in</Link>
+        </nav>
+        <small>© 2026 SubTrack</small>
+      </footer>
+    </main>
+  );
 }

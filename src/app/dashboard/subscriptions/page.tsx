@@ -108,13 +108,13 @@ export default async function Subscriptions({ searchParams }: { searchParams: Pr
               <thead><tr><th scope="col">SERVICE</th><th scope="col">CATEGORY</th><th scope="col">PRICE</th><th scope="col">BILLING</th><th scope="col">NEXT EXPECTED</th><th scope="col">STATUS</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
               <tbody>{rows.map((subscription) => (
                 <tr key={subscription.id}>
-                  <td><Link className="table-service" href={`/dashboard/subscriptions/${subscription.id}`}><span className="service-icon service-generic" aria-hidden="true">{subscription.service_name.slice(0, 1).toUpperCase()}</span>{subscription.service_name}</Link></td>
-                  <td>{subscription.category}</td>
-                  <td className="table-amount">{currency(Number(subscription.amount), subscription.currency)}<small className="billing-unit"> / {subscription.billing_cycle.replace("_", " ")}</small></td>
-                  <td>{subscription.billing_cycle.replace("_", " ")}</td>
-                  <td>{readableDate(subscription.next_payment_date)}</td>
-                  <td><span className={`status status-${subscription.status}`}>{subscription.status}</span></td>
-                  <td><div className="row-actions">
+                  <td data-label="Service"><Link className="table-service" href={`/dashboard/subscriptions/${subscription.id}`}><span className="service-icon service-generic" aria-hidden="true">{subscription.service_name.slice(0, 1).toUpperCase()}</span>{subscription.service_name}</Link></td>
+                  <td data-label="Category">{subscription.category}</td>
+                  <td data-label="Price" className="table-amount">{currency(Number(subscription.amount), subscription.currency)}<small className="billing-unit"> / {subscription.billing_cycle.replace("_", " ")}</small></td>
+                  <td data-label="Billing">{subscription.billing_cycle.replace("_", " ")}</td>
+                  <td data-label="Next expected">{readableDate(subscription.next_payment_date)}</td>
+                  <td data-label="Status"><span className={`status status-${subscription.status}`}>{subscription.status}</span></td>
+                  <td data-label="Actions"><div className="row-actions">
                     <form action={changeStatus}>
                       <input type="hidden" name="id" value={subscription.id}/>
                       <input type="hidden" name="status" value={subscription.status === "active" ? "paused" : "active"}/>
@@ -122,7 +122,7 @@ export default async function Subscriptions({ searchParams }: { searchParams: Pr
                     </form>
                     <form action={deleteSubscription}>
                       <input type="hidden" name="id" value={subscription.id}/>
-                      <ConfirmSubmitButton className="text-action text-danger" ariaLabel={`Delete ${subscription.service_name}`} message={`Delete ${subscription.service_name}? Recorded payment history is retained and may prevent deletion.`}>Delete</ConfirmSubmitButton>
+                      <ConfirmSubmitButton className="text-action text-danger" ariaLabel={`Delete ${subscription.service_name}`} confirmLabel="Delete plan" message={`Delete ${subscription.service_name}? Recorded payment history is retained and may prevent deletion.`}>Delete</ConfirmSubmitButton>
                     </form>
                   </div></td>
                 </tr>

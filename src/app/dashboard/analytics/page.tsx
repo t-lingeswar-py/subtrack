@@ -82,7 +82,7 @@ export default async function Analytics() {
         <div>
           <div className="eyebrow">YOUR SPENDING, BROKEN DOWN</div>
           <h1>Analytics</h1>
-          <p>Insights calculated from your subscriptions and recorded payments.</p>
+          <p>Plan estimates use your subscription details. Payment trends use paid records you entered; usage is self-reported.</p>
         </div>
       </div>
 
@@ -95,8 +95,8 @@ export default async function Analytics() {
       ) : (
         <>
           <section className="metric-grid analytics-metrics" aria-label="Spending summary">
-            <Metric title="Monthly spending" value={currency(monthly, currencyCode)} hint="Active plans, normalized monthly"/>
-            <Metric title="Annual estimate" value={currency(annual, currencyCode)} hint="Based on billing cycles"/>
+            <Metric title="Monthly commitment" value={currency(monthly, currencyCode)} hint="Active plans, normalized monthly"/>
+            <Metric title="Annual plan estimate" value={currency(annual, currencyCode)} hint="Based on billing cycles"/>
             <Metric title="Average subscription" value={currency(average, currencyCode)} hint={`Across ${tracked.length} active plans`}/>
             <Metric title="Potential savings" value={currency(potential, currencyCode)} hint="Rarely or unused plans"/>
           </section>
@@ -106,7 +106,7 @@ export default async function Analytics() {
               <div className="panel-heading">
                 <div><h2>Recorded spending</h2><p>Paid payment history, last 6 months</p></div>
               </div>
-              <div className="spending-bars" role="img" aria-label="Recorded monthly payments over the previous six months">
+              <div className="spending-bars" role="img" aria-label={`Recorded paid amounts over the previous six months: ${trend.map(({ month, spend }) => `${month}, ${currency(spend, currencyCode)}`).join("; ")}`}>
                 {trend.map(({ month: label, spend }) => (
                   <div key={label}>
                     <span>{currency(spend, currencyCode)}</span>
@@ -120,13 +120,13 @@ export default async function Analytics() {
               <div className="panel-heading">
                 <div><h2>By category</h2><p>Monthly equivalent · {categoryData.length} categories</p></div>
               </div>
-              <CategoryChart data={categoryData}/>
+              <CategoryChart data={categoryData} currencyCode={currencyCode}/>
             </article>
             <article className="panel chart-panel full-chart">
               <div className="panel-heading">
                 <div><h2>Subscription comparison</h2><p>Monthly equivalent for your largest plans</p></div>
               </div>
-              <CostChart data={comparisonData}/>
+              <CostChart data={comparisonData} currencyCode={currencyCode}/>
             </article>
           </section>
 

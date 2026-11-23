@@ -5,6 +5,7 @@ import {
   CalendarDays,
   CreditCard,
   LayoutDashboard,
+  LogOut,
   Settings2,
   WalletCards,
 } from "lucide-react";
@@ -35,7 +36,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="app-shell">
       <a href="#main-content" className="skip-link">Skip to content</a>
       <aside className="sidebar">
-        <Link href="/" className="brand" aria-label="SubTrack home">
+        <Link href="/" className="brand">
           <span className="brand-mark">s</span>subtrack
         </Link>
         <div className="workspace-label">WORKSPACE</div>
@@ -47,7 +48,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <small>{user.email}</small>
           </div>
           <form action={signOut}>
-            <button className="logout-button" aria-label="Log out" title="Log out">↗</button>
+            <button className="logout-button" aria-label="Log out" title="Log out"><LogOut size={16} aria-hidden="true"/></button>
           </form>
         </div>
       </aside>
@@ -64,7 +65,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
               {!!unreadCount && <span className="notification-count" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
             </Link>
             <Link href="/dashboard/subscriptions#add" className="button button-primary button-small">+ Add subscription</Link>
-            <div className="top-avatar" aria-label={name}>{initial}</div>
+            <Link href="/dashboard/settings" className="top-avatar" aria-label={`Account settings for ${name}`} title="Account settings"><span aria-hidden="true">{initial}</span></Link>
+            <form action={signOut} className="mobile-logout">
+              <button className="logout-button" aria-label="Log out" title="Log out"><LogOut size={16} aria-hidden="true"/></button>
+            </form>
           </div>
         </header>
         <div id="main-content" tabIndex={-1}>{children}</div>

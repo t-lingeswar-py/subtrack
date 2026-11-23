@@ -50,8 +50,12 @@ export function DashboardBreadcrumb() {
   const title = routeTitles[basePath] ?? "Workspace";
 
   return (
-    <div className="breadcrumbs" aria-label="Breadcrumb">
-      Workspace <b aria-hidden="true">/</b> <span>{title}</span>
-    </div>
+    <nav className="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><Link href="/dashboard">Workspace</Link></li>
+        <li aria-hidden="true"><span>/</span></li>
+        <li aria-current="page">{title}</li>
+      </ol>
+    </nav>
   );
 }

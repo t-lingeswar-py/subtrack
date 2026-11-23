@@ -1,5 +1,48 @@
 "use client";
 import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-const colors=["#594de6","#818cf8","#a5b4fc","#c7d2fe","#2a9d75","#f0a44b","#f27d6d"];
-export function CategoryChart({data}:{data:{name:string;value:number}[]}){return <ResponsiveContainer width="100%" height={240}><PieChart><Pie data={data} dataKey="value" nameKey="name" innerRadius={60} outerRadius={88} paddingAngle={3}>{data.map((_,i)=><Cell key={i} fill={colors[i%colors.length]}/>)}</Pie><Tooltip formatter={(v)=>[`₹${Number(v).toLocaleString("en-IN")}`]}/><Legend iconType="circle"/></PieChart></ResponsiveContainer>}
-export function CostChart({data}:{data:{name:string;monthly:number}[]}){return <ResponsiveContainer width="100%" height={270}><BarChart data={data} margin={{left:-16,right:8,top:8}}><XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize:11,fill:"#64748b"}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:10,fill:"#94a3b8"}}/><Tooltip formatter={(v)=>[`₹${Number(v).toLocaleString("en-IN")}`,"/ month"]}/><Bar dataKey="monthly" fill="#594de6" radius={[5,5,0,0]}/></BarChart></ResponsiveContainer>}
+import { currency } from "@/lib/calculations";
+
+const colors = ["#ff637d", "#8b91ff", "#ffc96f", "#c58cff", "#6ed6c4", "#ff996f", "#f38fb1"];
+
+export function CategoryChart({
+  data,
+  currencyCode,
+}: {
+  data: { name: string; value: number }[];
+  currencyCode: string;
+}) {
+  return (
+    <div role="img" aria-label={`Monthly equivalents by category: ${data.map(({ name, value }) => `${name}, ${currency(value, currencyCode)}`).join("; ")}`}>
+      <ResponsiveContainer width="100%" height={240}>
+        <PieChart>
+          <Pie data={data} dataKey="value" nameKey="name" innerRadius={60} outerRadius={88} paddingAngle={3}>
+            {data.map((category, index) => <Cell key={category.name} fill={colors[index % colors.length]}/>)}
+          </Pie>
+          <Tooltip formatter={(value) => [currency(Number(value), currencyCode)]}/>
+          <Legend iconType="circle"/>
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export function CostChart({
+  data,
+  currencyCode,
+}: {
+  data: { name: string; monthly: number }[];
+  currencyCode: string;
+}) {
+  return (
+    <div role="img" aria-label={`Monthly equivalent by subscription: ${data.map(({ name, monthly }) => `${name}, ${currency(monthly, currencyCode)}`).join("; ")}`}>
+      <ResponsiveContainer width="100%" height={270}>
+        <BarChart data={data} margin={{ left: -16, right: 8, top: 8 }}>
+          <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#b2b0bc" }}/>
+          <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#b2b0bc" }}/>
+          <Tooltip formatter={(value) => [currency(Number(value), currencyCode), "Monthly equivalent"]}/>
+          <Bar dataKey="monthly" fill="#ff637d" radius={[5, 5, 0, 0]}/>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
