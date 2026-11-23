@@ -13,14 +13,14 @@ export default function SpendingChart({
     <div className="chart-container" role="img" aria-label={`Recorded paid amounts: ${data.map(({ month, spend }) => `${month}, ${currency(spend, currencyCode)}`).join("; ")}`}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 10, right: 14, left: -20, bottom: 0 }}>
-          <CartesianGrid vertical={false} stroke="#343846"/>
-          <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#b2b0bc", fontSize: 11 }}/>
-          <YAxis axisLine={false} tickLine={false} tick={{ fill: "#b2b0bc", fontSize: 10 }}/>
+          <CartesianGrid vertical={false} stroke="#303b57"/>
+          <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#b7bfd3", fontSize: 11 }}/>
+          <YAxis axisLine={false} tickLine={false} tick={{ fill: "#b7bfd3", fontSize: 10 }}/>
           <Tooltip
             formatter={(value) => [currency(Number(value), currencyCode), "Recorded paid amount"]}
-            contentStyle={{ borderRadius: 12, border: "1px solid #393d4b", background: "#1a1e29", color: "#f5f3f6", boxShadow: "0 8px 24px rgb(0 0 0 / 28%)" }}
+            contentStyle={{ borderRadius: 12, border: "1px solid #34405e", background: "#151c2d", color: "#f8f8fc", boxShadow: "0 8px 24px rgb(0 0 0 / 38%)" }}
           />
-          <Line type="monotone" dataKey="spend" stroke="#ff637d" strokeWidth={2.5} dot={{ r: 3, fill: "#ff637d", strokeWidth: 0 }} activeDot={{ r: 5 }}/>
+          <Line type="monotone" dataKey="spend" stroke="#ff5d83" strokeWidth={2.5} dot={{ r: 3, fill: "#ff5d83", strokeWidth: 0 }} activeDot={{ r: 5 }}/>
         </LineChart>
       </ResponsiveContainer>
     </div>

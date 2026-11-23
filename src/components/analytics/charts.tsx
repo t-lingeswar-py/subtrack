@@ -2,7 +2,7 @@
 import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { currency } from "@/lib/calculations";
 
-const colors = ["#ff637d", "#8b91ff", "#ffc96f", "#c58cff", "#6ed6c4", "#ff996f", "#f38fb1"];
+const colors = ["#ff405d", "#69b8ff", "#ff83b7", "#9d8bff", "#e7eaff", "#4388ed", "#da4c9e"];
 
 export function CategoryChart({
   data,
@@ -40,7 +40,7 @@ export function CostChart({
           <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#b2b0bc" }}/>
           <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#b2b0bc" }}/>
           <Tooltip formatter={(value) => [currency(Number(value), currencyCode), "Monthly equivalent"]}/>
-          <Bar dataKey="monthly" fill="#ff637d" radius={[5, 5, 0, 0]}/>
+          <Bar dataKey="monthly" fill="#ff405d" radius={[5, 5, 0, 0]}/>
         </BarChart>
       </ResponsiveContainer>
     </div>
