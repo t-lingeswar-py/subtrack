@@ -56,8 +56,8 @@ export default function ResetPasswordForm() {
         {message && <div className="form-note" role="status">{message}</div>}
         {!done ? (
           <form onSubmit={save} className="auth-form">
-            <label>New password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required minLength={8} autoComplete="new-password"/></span></label>
-            <label>Confirm password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input type="password" value={confirm} onChange={(event) => setConfirm(event.target.value)} required minLength={8} autoComplete="new-password"/></span></label>
+            <label>New password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required minLength={8} maxLength={128} autoComplete="new-password"/></span></label>
+            <label>Confirm password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input type="password" value={confirm} onChange={(event) => setConfirm(event.target.value)} required minLength={8} maxLength={128} autoComplete="new-password"/></span></label>
             <button className="button button-primary full-button" disabled={isSaving}>
               {isSaving ? "Updating password…" : "Update password"}{!isSaving && <ArrowRight size={15} aria-hidden="true"/>}
             </button>

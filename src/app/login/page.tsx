@@ -19,8 +19,8 @@ export default async function Login({searchParams}:{searchParams:Promise<{error?
         {error && <div className="form-error" role="alert">{errorText[error] || "We couldn’t sign you in. Please try again."}</div>}
         {message && <div className="form-note" role="status">{message}</div>}
         <form action={signIn} className="auth-form">
-          <label>Email address<span className="input-wrap"><Mail aria-hidden="true"/><input name="email" type="email" placeholder="you@example.com" required autoComplete="email"/></span></label>
-          <label>Password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input name="password" type="password" placeholder="At least 8 characters" required autoComplete="current-password" minLength={8}/></span></label>
+          <label>Email address<span className="input-wrap"><Mail aria-hidden="true"/><input name="email" type="email" placeholder="you@example.com" required autoComplete="email" maxLength={254}/></span></label>
+          <label>Password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input name="password" type="password" placeholder="At least 8 characters" required autoComplete="current-password" minLength={8} maxLength={128}/></span></label>
           <div className="form-between"><Link href="/forgot-password">Forgot password?</Link></div>
           <button className="button button-primary full-button">Log in <ArrowRight size={15} aria-hidden="true"/></button>
         </form>

@@ -48,7 +48,7 @@ export default function ForgotPassword() {
         {error && <div className="form-error" role="alert">{error}</div>}
         {message && <div className="form-note" role="status">{message}</div>}
         <form onSubmit={send} className="auth-form">
-          <label>Email address<span className="input-wrap"><Mail aria-hidden="true"/><input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" required/></span></label>
+          <label>Email address<span className="input-wrap"><Mail aria-hidden="true"/><input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" maxLength={254} required/></span></label>
           <button className="button button-primary full-button" disabled={isSending}>
             {isSending ? "Sending link…" : "Send reset link"}{!isSending && <ArrowRight size={15} aria-hidden="true"/>}
           </button>

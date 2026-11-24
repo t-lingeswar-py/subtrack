@@ -59,6 +59,25 @@ Reminder offsets (7 days, 3 days, and/or renewal day) are stored as profile pref
 3. Add the production callback URL in Supabase Auth redirect URLs.
 4. Deploy. Vercel reads `vercel.json` for the daily reminder schedule (Cron availability depends on the selected Vercel plan).
 
+### Production readiness checklist
+
+- Apply every migration in filename order and verify the reminder preference RPC and account-deletion migration are present.
+- Set `NEXT_PUBLIC_SITE_URL` to the canonical HTTPS origin. In Supabase Auth, configure that origin as the Site URL and allow the exact `/auth/callback` and `/reset-password` redirect URLs.
+- Configure the service-role key and cron secret as server-only deployment variables. Do not expose either through `NEXT_PUBLIC_*`, commit `.env.local`, or use production secrets in preview environments.
+- Set the Vercel environment variables for the production environment and confirm the scheduled reminder job is enabled for the selected plan.
+- Before release, run `npm run lint`, `npm test`, `npx tsc --noEmit`, and `npm run build`; then smoke-test registration, email confirmation, sign-in/out, password reset, subscription CRUD, manual payment records, export, and account deletion against a non-production Supabase project.
+- Verify Supabase RLS policies and backup/restore procedures independently. A passing local build does not verify database migrations, email delivery, cron execution, or account deletion.
+
+The app renders its own 404 page and recoverable error screens. These screens do not replace server-side monitoring: production operators should capture deployment/runtime logs and use the displayed error reference digest to correlate Next.js failures without exposing internal exception details to users.
+
+## Troubleshooting
+
+- **“Connect Supabase to enable accounts”**: set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in the local environment and restart the dev server.
+- **Confirmation or recovery link returns to the wrong host**: correct the Supabase Site URL, redirect allow-list, and `NEXT_PUBLIC_SITE_URL`, then request a new email.
+- **Reminder endpoint returns 401**: verify the scheduled request uses `Authorization: Bearer <CRON_SECRET>` and that the deployment secret matches.
+- **Reminder endpoint returns 503**: verify `SUPABASE_SERVICE_ROLE_KEY` and the public Supabase URL are configured in the server environment.
+- **Dashboard data fails to load**: verify migrations and RLS policies are applied to the connected Supabase project, then inspect server logs using the error reference shown by the app.
+
 ## MVP notes
 
 - Subscription costs are normalized to monthly/annual equivalents using the entered currency. Totals across different currencies are not exchange-rate converted.

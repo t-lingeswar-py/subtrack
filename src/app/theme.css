@@ -1261,3 +1261,19 @@ td { border-bottom-color: #29334b; color: #d6dcec; }
 @media (max-width: 700px) {
   .sidebar { border-top-color: #323643; box-shadow: 0 -8px 25px rgb(0 0 0 / 48%); }
 }
+
+.system-page {
+  background:
+    radial-gradient(ellipse at 82% 15%, rgb(37 102 214 / 23%), transparent 42rem),
+    radial-gradient(ellipse at 12% 90%, rgb(238 41 83 / 17%), transparent 34rem),
+    var(--page);
+}
+.system-card { border-color: rgb(139 170 255 / 17%); background: linear-gradient(150deg, #192135, #101522); }
+.system-icon { display: grid; width: 48px; height: 48px; place-items: center; margin-bottom: 20px; border: 1px solid rgb(255 131 183 / 24%); border-radius: 15px; background: #342238; color: #ff83b7; }
+.system-card .auth-kicker { margin-bottom: 9px; }
+.system-card h1 { margin-bottom: 10px; }
+.system-card > p { line-height: 1.7; }
+.system-reference { overflow-wrap: anywhere; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: rgb(7 9 17 / 55%); color: var(--muted); font-size: 11px !important; }
+.system-reference code { color: var(--blue); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.system-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 21px; }
+.system-actions .button { flex: 1 1 auto; }

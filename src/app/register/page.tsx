@@ -19,9 +19,9 @@ export default async function Register({searchParams}:{searchParams:Promise<{err
         {error && <div className="form-error" role="alert">{errorText[error] || "We couldn’t create your account. Please try again."}</div>}
         <form action={signUp} className="auth-form">
           <label>Full name<span className="input-wrap"><UserRound aria-hidden="true"/><input name="full_name" placeholder="Your name" required minLength={2} maxLength={100} autoComplete="name"/></span></label>
-          <label>Email address<span className="input-wrap"><Mail aria-hidden="true"/><input name="email" type="email" placeholder="you@example.com" required autoComplete="email"/></span></label>
-          <label>Password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input name="password" type="password" placeholder="At least 8 characters" required minLength={8} autoComplete="new-password"/></span></label>
-          <label>Confirm password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input name="confirm_password" type="password" placeholder="Type your password again" required minLength={8} autoComplete="new-password"/></span></label>
+          <label>Email address<span className="input-wrap"><Mail aria-hidden="true"/><input name="email" type="email" placeholder="you@example.com" required autoComplete="email" maxLength={254}/></span></label>
+          <label>Password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input name="password" type="password" placeholder="At least 8 characters" required minLength={8} maxLength={128} autoComplete="new-password"/></span></label>
+          <label>Confirm password<span className="input-wrap"><LockKeyhole aria-hidden="true"/><input name="confirm_password" type="password" placeholder="Type your password again" required minLength={8} maxLength={128} autoComplete="new-password"/></span></label>
           <button className="button button-primary full-button">Create account <ArrowRight size={15} aria-hidden="true"/></button>
         </form>
         <div className="auth-switch">Already have an account? <Link href="/login">Log in</Link></div>
